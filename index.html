@@ -544,7 +544,7 @@ const th = store.get("cc-theme"); if(th) document.documentElement.dataset.theme 
 
 renderStatic();
 $("#results").innerHTML = `<div class="empty loading"><span class="spin" aria-hidden="true"></span>${t("loading")}</div>`;
-Promise.all(CHUNKS.map(f=>fetch(f).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })))
+Promise.all(CHUNKS.map(f=>fetch(f).then(r=>r.ok?r:fetch(f.split("/").pop())).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })))
   .then(parts=>{ parts.forEach(hydrate); ready = true; renderStatic(); renderSubs(); render(); })
   .catch(()=>{ $("#results").innerHTML = `<div class="empty">${t("loadErr")}</div>`; });
 
