@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Factorial Course Catalogue</title>
+<meta name="description" content="Factorial Training course catalogue">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fafafc;--surface:#fff;--surface-2:#f6f6f8;--line:#e6e6ec;--fg:#25253d;--muted:#6b6b80;
+  --accent:#ff355e;--brand:#ff355e;--accent-soft:#ffe3ea;--accent-fg:#fff;--accent-ink:#c60f35;
+  --teal:#05646b;--teal-soft:#e8f6f7;--new:#7a5600;--new-soft:#fff6e0;--star:#e8a200;
+  --hero:#25253d;--hero-fg:#fff;--hero-muted:#c4c4d4;--hero-card:rgba(255,255,255,.07);--hero-line:rgba(255,255,255,.12);
+  --shadow:0 1px 2px rgba(37,37,61,.05),0 6px 18px rgba(37,37,61,.06);
+  --f-body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1a1a2b;--surface:#23233a;--surface-2:#2a2a44;--line:#37375a;--fg:#f6f6f8;--muted:#a9a9c0;
+  --accent:#ff5c7c;--accent-soft:rgba(255,53,94,.16);--accent-ink:#ff8aa2;
+  --teal:#6fd3da;--teal-soft:rgba(5,100,107,.3);--new:#ffd27a;--new-soft:rgba(255,190,60,.15);--star:#ffc23d;
+  --hero:#212136;--hero-card:rgba(255,255,255,.05);--shadow:0 1px 2px rgba(0,0,0,.3);color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#1a1a2b;--surface:#23233a;--surface-2:#2a2a44;--line:#37375a;--fg:#f6f6f8;--muted:#a9a9c0;
+  --accent:#ff5c7c;--accent-soft:rgba(255,53,94,.16);--accent-ink:#ff8aa2;
+  --teal:#6fd3da;--teal-soft:rgba(5,100,107,.3);--new:#ffd27a;--new-soft:rgba(255,190,60,.15);--star:#ffc23d;
+  --hero:#212136;--hero-card:rgba(255,255,255,.05);--shadow:0 1px 2px rgba(0,0,0,.3);color-scheme:dark;}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+@media (max-width:600px){.wrap{padding:0 16px}}
+
+/* Hero */
+.hero{background:var(--hero);color:var(--hero-fg);padding:28px 0 36px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;color:var(--brand)}
+.brand svg{height:34px;width:auto;fill:currentColor;display:block}
+.top-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(255,53,94,.18);color:#ff9db1;font-size:13px;font-weight:600}
+.langs{display:inline-flex;background:var(--hero-card);border:1px solid var(--hero-line);border-radius:999px;padding:3px}
+.langs button{border:0;background:none;padding:4px 11px;border-radius:999px;font-size:13px;font-weight:600;color:var(--hero-muted);cursor:pointer}
+.langs button[aria-pressed="true"]{background:#fff;color:#25253d}
+.icon-btn{border:1px solid var(--hero-line);background:var(--hero-card);color:var(--hero-fg);width:32px;height:32px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+h1{font-size:clamp(34px,6vw,58px);line-height:1.04;letter-spacing:-.035em;margin:34px 0 14px;font-weight:700}
+h1 em{font-style:normal;color:var(--accent)}
+.lead{max-width:620px;color:var(--hero-muted);margin:0 0 26px;font-size:16px}
+.stats{display:flex;gap:14px;flex-wrap:wrap}
+.stat{background:var(--hero-card);border:1px solid var(--hero-line);border-radius:14px;padding:14px 18px;min-width:120px}
+.stat b{display:block;font-size:30px;line-height:1.1;letter-spacing:-.02em}
+.stat span{font-size:13px;color:var(--hero-muted)}
+
+/* Category chips */
+.cats{padding:22px 0 6px}
+.cats h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:14px;font-weight:500;transition:border-color .15s,background .15s}
+.chip:hover{border-color:var(--accent)}
+.chip .dot{width:8px;height:8px;border-radius:50%}
+.chip .n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip[aria-pressed="true"] .n{color:inherit;opacity:.7}
+
+.newbar{margin:16px 0 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--new-soft);border-radius:14px;padding:10px 14px;font-size:14px}
+.newbar strong{color:var(--new)}
+.newbar button{border:0;background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Toolbar */
+.toolbar{position:sticky;top:0;z-index:5;background:var(--bg);padding:14px 0;border-bottom:1px solid var(--line);margin-top:16px}
+.tb{display:grid;grid-template-columns:minmax(220px,2fr) repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.tb{grid-template-columns:1fr 1fr}.tb .search{grid-column:1/-1}}
+.field{position:relative;display:flex;align-items:center}
+.field svg{position:absolute;left:12px;color:var(--muted);pointer-events:none}
+.field input,.field select{width:100%;height:42px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:0 12px 0 36px;outline:none;appearance:none;-webkit-appearance:none}
+.field select{padding-right:30px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b80' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;text-overflow:ellipsis}
+.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+.meta-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 0 14px;flex-wrap:wrap}
+.count{color:var(--muted);font-size:14px}.count b{color:var(--fg)}
+.meta-r{display:flex;gap:10px;align-items:center}
+.reset{border:0;background:none;color:var(--accent-ink);font-weight:600;cursor:pointer;font-size:14px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface)}
+.seg button{border:0;background:none;padding:5px 14px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+
+/* Cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;padding-bottom:60px}
+@media (max-width:400px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow);cursor:pointer;text-align:left;transition:transform .15s,border-color .15s;min-width:0}
+.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.card-h{display:flex;gap:12px;align-items:flex-start}
+.av{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;font-family:var(--f-mono)}
+.card h3{margin:0 0 6px;font-size:16px;line-height:1.3;letter-spacing:-.01em;overflow-wrap:anywhere}
+.badges{display:flex;flex-wrap:wrap;gap:5px}
+.b{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.b.new{background:var(--new-soft);color:var(--new)}
+.b.cat{background:var(--accent-soft);color:var(--accent-ink)}
+.b.lvl{background:var(--teal-soft);color:var(--teal)}
+.desc{margin:0;color:var(--muted);font-size:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.foot{margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.foot small{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.foot>div>span{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.stars{color:var(--star)}
+.flags{display:flex;gap:4px;flex-wrap:wrap}
+.flag{font-family:var(--f-mono);font-size:11px;padding:1px 6px;border-radius:6px;border:1px solid var(--line);color:var(--muted)}
+.flag.hl{border-color:var(--accent);color:var(--accent-ink)}
+.prov{font-size:12.5px;color:var(--muted)}
+
+/* Table */
+.tablewrap{overflow-x:auto;padding-bottom:60px}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14px;min-width:760px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--surface-2)}
+tbody tr{cursor:pointer}tbody tr:hover{background:var(--surface-2)}
+td.t{font-weight:600}
+
+.lf-btn{width:100%;height:42px;border:1px solid var(--line);background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b80' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;border-radius:12px;padding:0 30px 0 36px;text-align:left;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lf-btn[aria-expanded="true"],.lf-btn.on{border-color:var(--accent)}
+.lf-btn.on{color:var(--accent-ink);font-weight:600}
+.lf-panel{position:absolute;top:48px;left:0;z-index:30;width:310px;max-width:calc(100vw - 32px);background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 36px rgba(20,20,40,.18);padding:14px}
+@media (max-width:900px){#lf .lf-panel{left:auto;right:0}}
+.lf-top{display:flex;justify-content:space-between;align-items:center}
+.lf-clear{border:0;background:none;color:var(--accent-ink);font-weight:600;font-size:13px;cursor:pointer}
+.lf-note{margin:4px 0 10px;font-size:12px;color:var(--muted)}
+.lf-types{display:flex;flex-direction:column;gap:4px;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:10px;font-size:14px}
+.lf-types label,.lf-row label{display:flex;align-items:center;gap:8px;cursor:pointer;min-width:0}
+#lf .lf-panel input[type=checkbox]{appearance:auto;-webkit-appearance:checkbox;accent-color:var(--accent);width:16px;height:16px;margin:0;padding:0;border:0;box-shadow:none;flex:none;background:none}
+#lf .lf-q{width:100%;height:36px;border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:0 10px;outline:none;margin-bottom:8px}
+#lf .lf-q:focus{box-shadow:none;border-color:var(--accent)}
+.lf-list{max-height:280px;overflow:auto;font-size:14px}
+.lf-row{display:flex;align-items:center;gap:6px;padding:5px 2px}
+.lf-row label{flex:1}
+.lf-row .n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.lf-row.kid{padding-left:24px}
+.lf-exp{border:0;background:var(--surface-2);border-radius:6px;width:22px;height:22px;cursor:pointer;color:var(--muted);font-size:11px;line-height:1}
+.lf-exp[aria-expanded="true"]{transform:rotate(180deg)}
+.lf-none{color:var(--muted);font-size:13px;padding:8px 2px}
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+
+/* Modal */
+dialog{border:0;padding:0;border-radius:20px;max-width:640px;width:calc(100% - 32px);background:var(--surface);color:var(--fg);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(20,20,35,.55)}
+.m-h{padding:24px 24px 0;display:flex;gap:14px}
+.m-h h3{margin:0 0 8px;font-size:21px;line-height:1.25;letter-spacing:-.02em}
+.m-b{padding:16px 24px 24px}
+.m-b p{margin:0 0 16px;color:var(--muted)}
+.m-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.m-grid div{background:var(--surface-2);border-radius:12px;padding:10px 12px}
+.m-grid small{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.m-grid span{font-weight:600;font-size:14px}
+.m-b h4{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px}
+.m-close{margin-left:auto;flex:none;border:0;background:var(--surface-2);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1}
+.m-langs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:13px}
+.more-wrap{display:flex;justify-content:center;padding:4px 0 60px}
+.more{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:10px 22px;font-weight:600;cursor:pointer;display:inline-flex;gap:10px;align-items:center}
+.more:hover{border-color:var(--accent)}
+.more span{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.grid{padding-bottom:20px}
+.tablewrap{padding-bottom:20px}
+.loading{display:flex;gap:12px;align-items:center;justify-content:center}
+.spin{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--accent);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+.m-note{font-size:12.5px;margin:16px 0 0!important}
+.stat b{font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="top">
+      <div class="brand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127 36" role="img" aria-label="Factorial"><title>Factorial</title><path d="M126.5 30.3231H122.069V5.67694H126.5V30.3231Z"/><path d="M114.108 15.6586V13.7077H118.469V30.3231H114.108V27.8805C112.897 29.4376 111.16 30.2161 108.969 30.2161C106.882 30.2161 104.724 29.4056 103.222 27.7846C101.74 26.1422 101.023 24.1608 101.023 21.7932C101.023 19.4469 101.74 17.429 103.222 15.7866C104.724 14.1442 106.777 13.4308 108.864 13.4308C111.055 13.4308 112.897 14.1016 114.108 15.6586ZM106.621 25.033C107.435 25.8649 108.468 26.2808 109.72 26.2808C110.972 26.2808 112.005 25.8649 112.819 25.033C113.654 24.1798 114.108 23.092 114.108 21.7696C114.108 20.4471 113.654 19.37 112.819 18.5381C112.005 17.685 110.972 17.2584 109.72 17.2584C108.468 17.2584 107.435 17.685 106.621 18.5381C105.808 19.37 105.385 20.4471 105.385 21.7696C105.385 23.092 105.808 24.1798 106.621 25.033Z"/><path d="M86.3279 13.7077V16.6531C86.6883 15.6283 87.5868 14.6755 88.097 14.331C88.5692 14.0121 89.6534 13.4308 90.7769 13.4308V17.921C89.5262 17.7465 88.6169 18.3058 87.7154 19.0079C86.7598 19.7522 86.3462 20.8068 86.3462 22.3767V30.3231H81.9154V13.7077H86.3279Z"/><path d="M41.5419 30.3231C39.129 30.3231 37.1111 29.5126 35.4882 27.8916C33.8867 26.2706 32.9 24.3196 32.9 21.9308C32.9 19.542 33.8867 17.4832 35.4882 15.8623C37.1111 14.2413 39.129 13.4308 41.5419 13.4308C43.1007 13.4308 44.5207 13.804 45.8019 14.5505C47.0831 15.297 48.2355 16.2995 48.8975 17.5579L45.1613 19.6374C44.841 18.9762 44.3499 18.4537 43.6879 18.0698C43.0473 17.6859 42.3213 17.4939 41.5099 17.4939C40.2714 17.4939 39.2464 17.9098 38.435 18.7416C37.6236 19.5521 37.1414 20.5972 37.1414 21.8769C37.1414 23.114 37.6236 24.1591 38.435 25.0123C39.2464 25.8227 40.2714 26.228 41.5099 26.228C42.3427 26.228 43.0794 26.0467 43.72 25.6841C44.3819 25.3002 45.0539 24.7776 45.3742 24.1164L48.9615 26.164C48.2569 27.4437 47.2533 28.4568 45.9507 29.2033C44.6695 29.9498 43.0794 30.3231 41.5419 30.3231Z"/><path d="M25.7 15.6728V13.7077H30.1308V30.3231H25.7V27.9726C24.4705 29.5396 22.7056 30.3231 20.4797 30.3231C18.3598 30.3231 16.1675 29.5074 14.6412 27.876C13.1361 26.2232 12.4077 24.2292 12.4077 21.8465C12.4077 19.4853 13.1361 17.4545 14.6412 15.8016C16.1675 14.1488 18.2531 13.4308 20.373 13.4308C22.5989 13.4308 24.4705 14.1058 25.7 15.6728ZM18.0948 25.107C18.9216 25.9441 19.9709 26.3627 21.2428 26.3627C22.5148 26.3627 23.5641 25.9441 24.3909 25.107C25.2388 24.2483 25.7 23.1536 25.7 21.8227C25.7 20.4919 25.2388 19.4078 24.3909 18.5707C23.5641 17.7121 22.5148 17.2827 21.2428 17.2827C19.9709 17.2827 18.9216 17.7121 18.0948 18.5707C17.2681 19.4078 16.8385 20.4919 16.8385 21.8227C16.8385 23.1536 17.2681 24.2483 18.0948 25.107Z"/><path d="M10.4692 5.69175V10.1727C8.22216 10.0204 7.15878 11.2914 7.15878 13.2923V13.7077H10.4692V18.201H7.14615V30.3231H2.71539V18.201H0.5V13.7077H2.71538V13.2923C2.71538 10.9652 3.68217 8.95407 4.9329 7.77964C6.20483 6.58345 8.01017 5.53951 10.4692 5.69175Z"/><path d="M98.5308 30.3231H94.1V13.7077H98.5308V30.3231Z"/><path d="M98.8077 8.16925C98.8077 9.54571 97.6918 10.6616 96.3154 10.6616C94.9389 10.6616 93.8231 9.54571 93.8231 8.16925C93.8231 6.79279 94.9389 5.67694 96.3154 5.67694C97.6918 5.67694 98.8077 6.79279 98.8077 8.16925Z"/><path d="M71.1154 30.3231C75.7036 30.3231 79.4231 26.6036 79.4231 22.0154C79.4231 17.4272 75.7036 13.7077 71.1154 13.7077C66.5272 13.7077 62.8077 17.4272 62.8077 22.0154C62.8077 26.6036 66.5272 30.3231 71.1154 30.3231ZM71.1154 26.3077C73.486 26.3077 75.4077 24.386 75.4077 22.0154C75.4077 19.6448 73.486 17.7231 71.1154 17.7231C68.7448 17.7231 66.8231 19.6448 66.8231 22.0154C66.8231 24.386 68.7448 26.3077 71.1154 26.3077Z"/><path d="M51.1769 23.4062V10.9691L55.7961 9.55387V13.734H60.3575V18.093H55.7961C55.7961 19.6026 55.7384 22.1156 55.7384 23.2931C55.7384 25.1613 56.8869 25.9327 58.0392 25.9327C59.1916 25.9327 60.2215 25.2494 60.2215 25.2494L61.7 29.1457C61.7 29.1457 58.4488 31.1876 55.2142 29.8934C51.9796 28.5991 51.1769 26.118 51.1769 23.4062Z"/></svg></div>
+      <div class="top-r">
+        <span class="pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span data-i="pill"></span></span>
+        <div class="langs" role="group" aria-label="Language">
+          <button data-lang="es">ES</button><button data-lang="it">IT</button><button data-lang="en">EN</button>
+        </div>
+        <button class="icon-btn" id="theme" aria-label="Theme"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Z"/></svg></button>
+      </div>
+    </div>
+    <h1><span data-i="h1a"></span> <em data-i="h1b"></em></h1>
+    <p class="lead" data-i="lead"></p>
+    <div class="stats">
+      <div class="stat"><b id="s-courses"></b><span data-i="sCourses"></span></div>
+      <div class="stat"><b id="s-cats"></b><span data-i="sCats"></span></div>
+      <div class="stat"><b id="s-hours"></b><span data-i="sHours"></span></div>
+      <div class="stat"><b id="s-multi"></b><span data-i="sMulti"></span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="cats">
+    <h2 data-i="browse"></h2>
+    <div class="chips" id="chips"></div>
+    <div class="newbar" id="newbar"></div>
+  </section>
+
+  <div class="toolbar">
+    <div class="tb">
+      <label class="field search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search"></label>
+      <label class="field"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M6 12h12M10 18h4"/></svg><select id="f-cat"></select></label>
+      <label class="field"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h10M4 17h6"/></svg><select id="f-sub"></select></label>
+      <div class="field lf" id="lf"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><button type="button" class="lf-btn" id="lf-btn" aria-expanded="false" aria-controls="lf-panel"><span id="lf-label"></span></button>
+        <div class="lf-panel" id="lf-panel" hidden>
+          <div class="lf-top"><b data-i="languages"></b><button type="button" class="lf-clear" id="lf-clear" data-i="lfClear"></button></div>
+          <p class="lf-note" data-i="lfNote"></p>
+          <div class="lf-types">
+            <label><input type="checkbox" data-ltype="tx"> <span data-i="ltx"></span></label>
+            <label><input type="checkbox" data-ltype="su"> <span data-i="lsu"></span></label>
+            <label><input type="checkbox" data-ltype="au"> <span data-i="lau"></span></label>
+          </div>
+          <input type="search" class="lf-q" id="lf-q" autocomplete="off">
+          <div class="lf-list" id="lf-list"></div>
+        </div>
+      </div>
+      <label class="field"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><select id="f-lvl"></select></label>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="count" id="count"></div>
+    <div class="meta-r">
+      <button class="reset" id="reset" hidden data-i="reset"></button>
+      <label class="field" style="min-width:170px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4v16M3 16l4 4 4-4M17 20V4M13 8l4-4 4 4"/></svg><select id="sort"></select></label>
+      <div class="seg" role="group"><button data-view="cards" data-i="cards"></button><button data-view="table" data-i="table"></button></div>
+    </div>
+  </div>
+
+  <div id="results"></div>
+</main>
+
+<footer><div class="wrap" data-i="footer"></div></footer>
+
+<dialog id="modal"></dialog>
+
+<script>
+const META = {"cats":["Technology","Compliance","Business Skills","Leadership & Management","Wellness","Workplace Culture","Safety","Industry Specific","Certification Preparation"],"catN":[10785,5902,22376,7632,7042,3160,8336,9363,1843],"catT":{"Business Skills":{"es":"Habilidades empresariales","it":"Competenze aziendali","en":"Business Skills"},"Certification Preparation":{"es":"Preparación de certificaciones","it":"Preparazione certificazioni","en":"Certification Prep"},"Compliance":{"es":"Cumplimiento normativo","it":"Compliance","en":"Compliance"},"Technology":{"es":"Tecnología","it":"Tecnologia","en":"Technology"},"Safety":{"es":"Seguridad laboral","it":"Sicurezza sul lavoro","en":"Safety"},"Industry Specific":{"es":"Sectores específicos","it":"Settori specifici","en":"Industry Specific"},"Leadership & Management":{"es":"Liderazgo y gestión","it":"Leadership e management","en":"Leadership & Management"},"Wellness":{"es":"Bienestar","it":"Benessere","en":"Wellness"},"Workplace Culture":{"es":"Cultura de empresa","it":"Cultura aziendale","en":"Workplace Culture"}},"subs":["Artificial Intelligence","Digital Compliance","Communication","Relationship Building","Professional Development","Software","Finance","Remote Working","Management","Leadership","Conflict Resolution","Emotional Intelligence","Stress Management","Time Management","Decision Making","Data Management","Bias","Teamwork","Team Development","Project Management","Problem Solving","Ethics","Negotiation","Motivation","Cybersecurity","Accountability","Compassion & Empathy","Business Strategy","Process Improvement","Risk Management","Delegation","Marketing","Business Operations","Performance Management","Building Organizational Culture","Talent Development","Growth Mindset","Work/Life Balance","Mentoring","Coaching","Programming","Google","Handling Change","Resilience","Positive Attitude","Flexibility","Meetings","Habit Formation","Personal Enrichment","Etiquette","IT Administration","Ergonomics","Organizational Skills","Business Writing","Databases","Operating Systems","Cloud Computing & Server Technology","Trust","Building Diverse Teams","Inclusive Leadership","Web Development","Machine Learning","Business Law","Sustainability","Human Resources Compliance","GDPR","Privacy","International Operations","Whistleblowing","Workplace Safety","Security & Fire Systems","Onboarding","Change Management","Digital Transformation","Design Thinking","Belonging","Sexual Orientation","Networking","Mindfulness & Meditation","Mental Wellness","Race & Ethnicity","Bullying","Respect","Corporate Wellness","Age Diversity","Executive Presence","Cultural Competence","Gender Identity","Customer Focus","Customer Service","Sales","Business Math","Women in the Workplace","Equity","Interview Skills","Entrepreneurship","International Business","Innovation","Human Resources Administration","Creativity","Microaggressions","Social Media","Neurodiversity","Sexual Harassment","Supply Chain Management","Personality Assessments","Mission, Vision, and Value Setting","Blockchain & Crypto","Mobile Devices","Corporate Social Responsibility","Language Learning","Social Wellness","Personal Finance","Sleep & Insomnia","Exercise & Fitness","Mental Health Awareness","Hand & Arm Safety","OSHA","Fire Safety","Personal Protective Equipment (PPE)","Hazard Communication","Fall Prevention","Heat Safety","Risk Assessment","Back/Spinal Safety","Violence Prevention","Lone Worker","Industrial & Warehouse Safety","Construction Safety","Workplace Harassment","Healthcare","Personal Hygiene","HIPAA","Workplace Infection Prevention","Ladder & Scaffolding Safety","Hazardous Materials","Lockout/Tagout","Manufacturing","Emergency Response","First Aid","Nutrition","Web Design","Instructional Design","Psychological Safety","Grounds & Facility Management","Active Shooter","Bystander Intervention","Succession Planning","Six Sigma Certification","Certification Test Prep","Retail","Nonprofit & Government","Small Business","ISACA","CompTIA","IT Support","Green Building","Education","Accessibility","Diversity, Equity & Inclusion Fundamentals","Sustainable Energy","Laboratory Safety","Electrical Safety","Chemical Safety","Safe Driving","Electrical","Human Trafficking","Project Management Institute","Environmental Safety","Material Handling","Crane Safety","DOT Compliance","Transportation","Drugs and Alcohol at Work","Forklifts & Powered Industrial Trucks","Water Management","Confined Spaces","Real Estate","Environmental Compliance","HAZWOPER","Eye, Face, & Head Safety","Hearing Safety","Office Safety","Aerial & Scissor Lifts","Construction","Record Keeping","Oil & Gas","Cold Safety","Disability Awareness","Mechanical","Engineering","Caregiving & Parenting","Architecture","Agile Certification","Pharmaceutical","Insurance","Anger Management","DevOps","Microsoft Certification","Alcohol & Food Safety","Food Service","Labor Relations","Anti-Money Laundering","Credit Cards & PCI Compliance","Mile2","Ethical Hacking Certifications","Hacking Forensic Investigation Certifications","Aviation","Maritime","Hospitality","Safety Sharps","Mergers & Acquisitions","AMA Certified Professional in Management","Addiction & Recovery","Antitrust & Competition Law","Banking","Senior & Assisted Living","Holidays & Observances","Religion & Spirituality","FCPA","OWASP","Food Safety Certification","Cisco Certification","AWS Certifications","Oracle Certification","Grief & Loss","Employee Resource Groups","FLSA","Climate","Law Enforcement","Mining","IOSH","ITIL","CompTIA Cloud+","Citrix Certification"],"subT":{"AMA Certified Professional in Management":["AMA Certified Professional in Management","AMA Certified Professional in Management"],"AWS Certifications":["Certificaciones AWS","Certificazioni AWS"],"Accessibility":["Accesibilidad","Accessibilità"],"Accountability":["Responsabilidad","Responsabilità"],"Active Shooter":["Tirador activo","Sparatoria attiva"],"Addiction & Recovery":["Adicciones y recuperación","Dipendenze e recupero"],"Aerial & Scissor Lifts":["Plataformas elevadoras y de tijera","Piattaforme aeree e a forbice"],"Age Diversity":["Diversidad generacional","Diversità generazionale"],"Agile Certification":["Certificación Agile","Certificazione Agile"],"Alcohol & Food Safety":["Alcohol y seguridad alimentaria","Alcol e sicurezza alimentare"],"Anger Management":["Gestión de la ira","Gestione della rabbia"],"Anti-Money Laundering":["Prevención del blanqueo de capitales","Antiriciclaggio"],"Antitrust & Competition Law":["Defensa de la competencia","Antitrust e diritto della concorrenza"],"Architecture":["Arquitectura","Architettura"],"Artificial Intelligence":["Inteligencia artificial","Intelligenza artificiale"],"Aviation":["Aviación","Aviazione"],"Back/Spinal Safety":["Seguridad de la espalda y la columna","Sicurezza della schiena e della colonna vertebrale"],"Banking":["Banca","Settore bancario"],"Belonging":["Sentido de pertenencia","Senso di appartenenza"],"Bias":["Sesgos","Pregiudizi"],"Blockchain & Crypto":["Blockchain y criptomonedas","Blockchain e criptovalute"],"Building Diverse Teams":["Creación de equipos diversos","Creare team diversificati"],"Building Organizational Culture":["Construcción de la cultura organizativa","Costruire la cultura organizzativa"],"Bullying":["Acoso e intimidación","Bullismo"],"Business Law":["Derecho mercantil","Diritto commerciale"],"Business Math":["Matemáticas empresariales","Matematica aziendale"],"Business Operations":["Operaciones de negocio","Operazioni aziendali"],"Business Strategy":["Estrategia empresarial","Strategia aziendale"],"Business Writing":["Redacción profesional","Scrittura professionale"],"Bystander Intervention":["Intervención de testigos","Intervento dei testimoni"],"Caregiving & Parenting":["Cuidados y crianza","Assistenza familiare e genitorialità"],"Certification Test Prep":["Preparación de exámenes de certificación","Preparazione agli esami di certificazione"],"Change Management":["Gestión del cambio","Gestione del cambiamento"],"Chemical Safety":["Seguridad química","Sicurezza chimica"],"Cisco Certification":["Certificación Cisco","Certificazione Cisco"],"Citrix Certification":["Certificación Citrix","Certificazione Citrix"],"Climate":["Clima","Clima"],"Cloud Computing & Server Technology":["Computación en la nube y tecnología de servidores","Cloud computing e tecnologia dei server"],"Coaching":["Coaching","Coaching"],"Cold Safety":["Seguridad frente al frío","Sicurezza dal freddo"],"Communication":["Comunicación","Comunicazione"],"CompTIA":["CompTIA","CompTIA"],"CompTIA Cloud+":["CompTIA Cloud+","CompTIA Cloud+"],"Compassion & Empathy":["Compasión y empatía","Compassione ed empatia"],"Confined Spaces":["Espacios confinados","Spazi confinati"],"Conflict Resolution":["Resolución de conflictos","Risoluzione dei conflitti"],"Construction":["Construcción","Edilizia"],"Construction Safety":["Seguridad en la construcción","Sicurezza nei cantieri"],"Corporate Social Responsibility":["Responsabilidad social corporativa","Responsabilità sociale d'impresa"],"Corporate Wellness":["Bienestar corporativo","Benessere aziendale"],"Crane Safety":["Seguridad con grúas","Sicurezza con le gru"],"Creativity":["Creatividad","Creatività"],"Credit Cards & PCI Compliance":["Tarjetas de crédito y cumplimiento PCI","Carte di credito e conformità PCI"],"Cultural Competence":["Competencia cultural","Competenza culturale"],"Customer Focus":["Orientación al cliente","Orientamento al cliente"],"Customer Service":["Atención al cliente","Assistenza clienti"],"Cybersecurity":["Ciberseguridad","Cybersecurity"],"DOT Compliance":["Cumplimiento DOT","Conformità DOT"],"Data Management":["Gestión de datos","Gestione dei dati"],"Databases":["Bases de datos","Database"],"Decision Making":["Toma de decisiones","Processo decisionale"],"Delegation":["Delegación","Delega"],"Design Thinking":["Design Thinking","Design Thinking"],"DevOps":["DevOps","DevOps"],"Digital Compliance":["Cumplimiento digital","Conformità digitale"],"Digital Transformation":["Transformación digital","Trasformazione digitale"],"Disability Awareness":["Sensibilización sobre la discapacidad","Sensibilizzazione sulla disabilità"],"Diversity, Equity & Inclusion Fundamentals":["Fundamentos de diversidad, equidad e inclusión","Fondamenti di diversità, equità e inclusione"],"Drugs and Alcohol at Work":["Drogas y alcohol en el trabajo","Droghe e alcol sul lavoro"],"Education":["Educación","Istruzione"],"Electrical":["Electricidad","Elettrotecnica"],"Electrical Safety":["Seguridad eléctrica","Sicurezza elettrica"],"Emergency Response":["Respuesta ante emergencias","Risposta alle emergenze"],"Emotional Intelligence":["Inteligencia emocional","Intelligenza emotiva"],"Employee Resource Groups":["Grupos de recursos para empleados","Gruppi di risorse per i dipendenti"],"Engineering":["Ingeniería","Ingegneria"],"Entrepreneurship":["Emprendimiento","Imprenditorialità"],"Environmental Compliance":["Cumplimiento medioambiental","Conformità ambientale"],"Environmental Safety":["Seguridad medioambiental","Sicurezza ambientale"],"Equity":["Equidad","Equità"],"Ergonomics":["Ergonomía","Ergonomia"],"Ethical Hacking Certifications":["Certificaciones de hacking ético","Certificazioni di ethical hacking"],"Ethics":["Ética","Etica"],"Etiquette":["Etiqueta profesional","Galateo professionale"],"Executive Presence":["Presencia ejecutiva","Presenza executive"],"Exercise & Fitness":["Ejercicio y forma física","Esercizio fisico e fitness"],"Eye, Face, & Head Safety":["Protección de ojos, cara y cabeza","Protezione di occhi, viso e testa"],"FCPA":["FCPA","FCPA"],"FLSA":["FLSA","FLSA"],"Fall Prevention":["Prevención de caídas","Prevenzione delle cadute"],"Finance":["Finanzas","Finanza"],"Fire Safety":["Seguridad contra incendios","Sicurezza antincendio"],"First Aid":["Primeros auxilios","Primo soccorso"],"Flexibility":["Flexibilidad","Flessibilità"],"Food Safety Certification":["Certificación en seguridad alimentaria","Certificazione di sicurezza alimentare"],"Food Service":["Restauración","Ristorazione"],"Forklifts & Powered Industrial Trucks":["Carretillas elevadoras y vehículos industriales","Carrelli elevatori e veicoli industriali"],"GDPR":["RGPD","GDPR"],"Gender Identity":["Identidad de género","Identità di genere"],"Google":["Google","Google"],"Green Building":["Construcción sostenible","Bioedilizia"],"Grief & Loss":["Duelo y pérdida","Lutto e perdita"],"Grounds & Facility Management":["Gestión de instalaciones y zonas exteriores","Gestione di strutture e aree esterne"],"Growth Mindset":["Mentalidad de crecimiento","Mentalità di crescita"],"HAZWOPER":["HAZWOPER","HAZWOPER"],"HIPAA":["HIPAA","HIPAA"],"Habit Formation":["Formación de hábitos","Creazione di abitudini"],"Hacking Forensic Investigation Certifications":["Certificaciones de investigación forense de hacking","Certificazioni di indagine forense sugli attacchi informatici"],"Hand & Arm Safety":["Seguridad de manos y brazos","Sicurezza di mani e braccia"],"Handling Change":["Afrontar el cambio","Affrontare il cambiamento"],"Hazard Communication":["Comunicación de peligros","Comunicazione dei pericoli"],"Hazardous Materials":["Materiales peligrosos","Materiali pericolosi"],"Healthcare":["Sanidad","Sanità"],"Hearing Safety":["Protección auditiva","Protezione dell'udito"],"Heat Safety":["Seguridad frente al calor","Sicurezza dal caldo"],"Holidays & Observances":["Festividades y celebraciones","Festività e ricorrenze"],"Hospitality":["Hostelería","Ospitalità"],"Human Resources Administration":["Administración de recursos humanos","Amministrazione delle risorse umane"],"Human Resources Compliance":["Cumplimiento en recursos humanos","Conformità nelle risorse umane"],"Human Trafficking":["Trata de personas","Tratta di esseri umani"],"IOSH":["IOSH","IOSH"],"ISACA":["ISACA","ISACA"],"IT Administration":["Administración de TI","Amministrazione IT"],"IT Support":["Soporte de TI","Supporto IT"],"ITIL":["ITIL","ITIL"],"Inclusive Leadership":["Liderazgo inclusivo","Leadership inclusiva"],"Industrial & Warehouse Safety":["Seguridad industrial y en almacenes","Sicurezza industriale e di magazzino"],"Innovation":["Innovación","Innovazione"],"Instructional Design":["Diseño instruccional","Progettazione didattica"],"Insurance":["Seguros","Assicurazioni"],"International Business":["Negocios internacionales","Business internazionale"],"International Operations":["Operaciones internacionales","Operazioni internazionali"],"Interview Skills":["Habilidades para entrevistas","Competenze per i colloqui"],"Labor Relations":["Relaciones laborales","Relazioni industriali"],"Laboratory Safety":["Seguridad en laboratorios","Sicurezza in laboratorio"],"Ladder & Scaffolding Safety":["Seguridad con escaleras y andamios","Sicurezza con scale e ponteggi"],"Language Learning":["Aprendizaje de idiomas","Apprendimento delle lingue"],"Law Enforcement":["Fuerzas de seguridad","Forze dell'ordine"],"Leadership":["Liderazgo","Leadership"],"Lockout/Tagout":["Bloqueo y etiquetado (Lockout/Tagout)","Blocco ed etichettatura (Lockout/Tagout)"],"Lone Worker":["Trabajo en solitario","Lavoratore isolato"],"Machine Learning":["Aprendizaje automático","Machine learning"],"Management":["Gestión","Management"],"Manufacturing":["Fabricación","Produzione"],"Maritime":["Marítimo","Marittimo"],"Marketing":["Marketing","Marketing"],"Material Handling":["Manipulación de materiales","Movimentazione dei materiali"],"Mechanical":["Mecánica","Meccanica"],"Meetings":["Reuniones","Riunioni"],"Mental Health Awareness":["Concienciación sobre la salud mental","Consapevolezza sulla salute mentale"],"Mental Wellness":["Bienestar mental","Benessere mentale"],"Mentoring":["Mentoría","Mentoring"],"Mergers & Acquisitions":["Fusiones y adquisiciones","Fusioni e acquisizioni"],"Microaggressions":["Microagresiones","Microaggressioni"],"Microsoft Certification":["Certificación Microsoft","Certificazione Microsoft"],"Mile2":["Mile2","Mile2"],"Mindfulness & Meditation":["Mindfulness y meditación","Mindfulness e meditazione"],"Mining":["Minería","Industria mineraria"],"Mission, Vision, and Value Setting":["Definición de misión, visión y valores","Definizione di missione, visione e valori"],"Mobile Devices":["Dispositivos móviles","Dispositivi mobili"],"Motivation":["Motivación","Motivazione"],"Negotiation":["Negociación","Negoziazione"],"Networking":["Redes","Reti"],"Neurodiversity":["Neurodiversidad","Neurodiversità"],"Nonprofit & Government":["Sector sin ánimo de lucro y administración pública","Non profit e pubblica amministrazione"],"Nutrition":["Nutrición","Nutrizione"],"OSHA":["OSHA","OSHA"],"OWASP":["OWASP","OWASP"],"Office Safety":["Seguridad en la oficina","Sicurezza in ufficio"],"Oil & Gas":["Petróleo y gas","Petrolio e gas"],"Onboarding":["Incorporación","Onboarding"],"Operating Systems":["Sistemas operativos","Sistemi operativi"],"Oracle Certification":["Certificación Oracle","Certificazione Oracle"],"Organizational Skills":["Habilidades de organización","Capacità organizzative"],"Performance Management":["Gestión del desempeño","Gestione della performance"],"Personal Enrichment":["Enriquecimiento personal","Crescita personale"],"Personal Finance":["Finanzas personales","Finanza personale"],"Personal Hygiene":["Higiene personal","Igiene personale"],"Personal Protective Equipment (PPE)":["Equipos de protección individual (EPI)","Dispositivi di protezione individuale (DPI)"],"Personality Assessments":["Evaluaciones de personalidad","Valutazioni della personalità"],"Pharmaceutical":["Farmacéutico","Farmaceutico"],"Positive Attitude":["Actitud positiva","Atteggiamento positivo"],"Privacy":["Privacidad","Privacy"],"Problem Solving":["Resolución de problemas","Problem solving"],"Process Improvement":["Mejora de procesos","Miglioramento dei processi"],"Professional Development":["Desarrollo profesional","Sviluppo professionale"],"Programming":["Programación","Programmazione"],"Project Management":["Gestión de proyectos","Gestione dei progetti"],"Project Management Institute":["Project Management Institute","Project Management Institute"],"Psychological Safety":["Seguridad psicológica","Sicurezza psicologica"],"Race & Ethnicity":["Raza y etnia","Razza ed etnia"],"Real Estate":["Sector inmobiliario","Settore immobiliare"],"Record Keeping":["Gestión de registros","Tenuta dei registri"],"Relationship Building":["Construcción de relaciones","Costruzione di relazioni"],"Religion & Spirituality":["Religión y espiritualidad","Religione e spiritualità"],"Remote Working":["Trabajo remoto","Lavoro da remoto"],"Resilience":["Resiliencia","Resilienza"],"Respect":["Respeto","Rispetto"],"Retail":["Comercio minorista","Commercio al dettaglio"],"Risk Assessment":["Evaluación de riesgos","Valutazione dei rischi"],"Risk Management":["Gestión de riesgos","Gestione del rischio"],"Safe Driving":["Conducción segura","Guida sicura"],"Safety Sharps":["Objetos punzantes y cortantes","Taglienti e acuminati"],"Sales":["Ventas","Vendite"],"Security & Fire Systems":["Sistemas de seguridad y contra incendios","Sistemi di sicurezza e antincendio"],"Senior & Assisted Living":["Atención a mayores y residencias asistidas","Assistenza agli anziani e residenze assistite"],"Sexual Harassment":["Acoso sexual","Molestie sessuali"],"Sexual Orientation":["Orientación sexual","Orientamento sessuale"],"Six Sigma Certification":["Certificación Six Sigma","Certificazione Six Sigma"],"Sleep & Insomnia":["Sueño e insomnio","Sonno e insonnia"],"Small Business":["Pequeña empresa","Piccola impresa"],"Social Media":["Redes sociales","Social media"],"Social Wellness":["Bienestar social","Benessere sociale"],"Software":["Software","Software"],"Stress Management":["Gestión del estrés","Gestione dello stress"],"Succession Planning":["Planificación de la sucesión","Pianificazione della successione"],"Supply Chain Management":["Gestión de la cadena de suministro","Gestione della supply chain"],"Sustainability":["Sostenibilidad","Sostenibilità"],"Sustainable Energy":["Energía sostenible","Energia sostenibile"],"Talent Development":["Desarrollo del talento","Sviluppo dei talenti"],"Team Development":["Desarrollo de equipos","Sviluppo del team"],"Teamwork":["Trabajo en equipo","Lavoro di squadra"],"Time Management":["Gestión del tiempo","Gestione del tempo"],"Transportation":["Transporte","Trasporti"],"Trust":["Confianza","Fiducia"],"Violence Prevention":["Prevención de la violencia","Prevenzione della violenza"],"Water Management":["Gestión del agua","Gestione delle risorse idriche"],"Web Design":["Diseño web","Web design"],"Web Development":["Desarrollo web","Sviluppo web"],"Whistleblowing":["Canal de denuncias","Whistleblowing"],"Women in the Workplace":["Mujeres en el trabajo","Donne nel mondo del lavoro"],"Work/Life Balance":["Conciliación laboral y personal","Equilibrio tra vita privata e lavoro"],"Workplace Harassment":["Acoso laboral","Molestie sul lavoro"],"Workplace Infection Prevention":["Prevención de infecciones en el trabajo","Prevenzione delle infezioni sul lavoro"],"Workplace Safety":["Seguridad en el trabajo","Sicurezza sul lavoro"]},"pubs":["Simon Sez IT","Sponge Learning","Humin","Maestro","Webucator Training","Enspark","MindEdge","Emotion Network","Vector Solutions","SkillStack","Intellezy","Viasky","AICPA","Mile2","HSI - Safety","Skilla","Happ Coach","American Management Association","WILL Interactive","Intuition Know-How","Talaera","Ethena","iHASCO","Center for Creative Leadership","RedVector","Pineapple Academy","EasyLlama","Global Learning Systems","The Galvanizing Group","Always Food Safe - Exams","Coaching Culture","Stone River eLearning","Learnamite","Blanchard","Digital Cloud Training","Infobase","Everything Is On The Record","Elsevier","SkillSprints","Digit Institute","Thrive","On This Topic","ServiceSkills","EverCourse","OpenDoors","Hard Hat Immersive","HSI - ej4","Dracolex","Enerdynamics","Skillshub","PaleBlue","IREM","Hard Hat Training Series","Vubiz","Litmos","Real Projects","Second City Works","E-SEC E-Learning","360 Immersive","Technology Transfer Services","KAZ Keyboard Typing","mybreev","Soundview","Thirty Minute Mentors","The Great Courses","Axonify","Certus","xUnlocked","The Training Refinery","Touchstone-TalentQuest","HSI - Martech Media","The Jeff Havens Company","PepTalk","Kineo","MindForge","Mitratech - Syntrio","Dr. Roger Firestien","GoodHabitz","Ally Safety","FutureThink","iAM Learning","7 Dimensions","Hoopis Performance Network","Eleventure","RelyOn","Always Food Safe","Vim and Vibe Productions","Kallidus","The Bolt Labs","TrainTeams ai","TED","The Expert Academy","GP Strategies","Pronto Spanish","MARCOM","Mindtools","The Nova Collective","PMI - Process Management International","London School Of Sales","EntrepreneurNOW","Global Network of Companies","INE","Packt","C2IQ","Symmetra","lawpilots","Alpha Development","Traliant","UpLevel","Ideas for Leaders","Management Pocketbooks","SONIC Performance Support","ICON","ProSkills Training","ExpertEdge","Madecraft","ACI Skill Labs","Cegos","Amplify Voices","Thinking Heads","Lou Adler's Performance-Based Hiring","Pragmatic Data Services","ISEAZY SKILLS","Channel 1 Creative Media","Sollah","AMC","The Security Company - TSC","Bigger Brains","Study Academy","Mind Channel","Speexx","Assemble You","Boot Camp Digital","Briefly","SunShower Learning","The Access Group","Mindscaling","HSI - Specialty Training","MIT Sloan Management Review","ACI Learning","Lumofy","XtremeLabs","The Institute for Workforce Reinvention","VinciWorks","Breaking Barriers United","AchieveCE","SAI360","OpenMind","Tortal Training by The Learning Network","Video Arts","Chegg Skills","HowToo","Society of Quality Assurance","RW3 CultureWizard","ClipTraining","Radical HR","Safety Instruct","The Learning Rooms","PINKTUM","LearnNowOnline","Sentinel 9","PureEHS","IT University Online"],"langs":["en","en-US","en-GB","zh","zh-Hans","fr","fr-FR","de","pt","pt-BR","es","es-ES","es-419","it","pl","zh-cmn","ja","ko","nl","ar","zh-Hant","pt-PT","ru","vi","hi","th","tr","cs","da","et","fr-CA","hu","id","lv","ms","ro","sv","tl","zh-TW","en-CA","ta","mk","am","bn","fa","fi","af","is","no","no-NB","pa","sw","uk","ur","dz","bs","en-IN","he","sr","el","kk","sw-KE","sq","bg","gu","lt","ml","ne","hr","sk","cy","ht","te","en-AU","km","my","so","mh","om","rw","ti","ksw","sw-TZ","en-NZ","zh-yue","ca","gl","ku","uz","sl","az","mn","hy","mr","si","kn","tg","be","mt","eu","ka","eo","ug","sc","ig","ky","tt","pl-SZ","bo","ps","lo","ru-IN","ar-DZ","ga","mg","zu","hmn"],"lvls":["Foundation","Universal","Application","Advanced"],"feats":["Audio Narration","Post-Assessment","Supplemental Resources","Video","Knowledge Checks","Interactive Elements","Transcript","Locked Navigation","Facilitator Guide","Test Out","Adaptive Learning","AI Coaching","Inline Activities"],"total":55588,"hours":58300,"multi":20578,"newest":[17678494,17678493,17678489,17678488],"newCut":20625};
+const CHUNKS = ["data/courses-1.json", "data/courses-2.json", "data/courses-3.json", "data/courses-4.json"];
+const PAGE = 48;
+
+const CAT_COLORS = {
+  "Business Skills":["#ffe3ea","#c60f35"],"Certification Preparation":["#e6ecff","#2f4fc4"],"Compliance":["#e8f6f7","#05646b"],
+  "Technology":["#efe7ff","#6a3fd0"],"Safety":["#fff1dc","#a35a00"],"Industry Specific":["#e7f5ea","#2d7a3e"],
+  "Leadership & Management":["#fdeaf6","#a2307a"],"Wellness":["#eef6dd","#5b7a12"],"Workplace Culture":["#e3f2ff","#1f5f99"]
+};
+
+const T = {
+ es:{pill:"Formación · Catálogo de cursos",h1a:"Todos los cursos,",h1b:"en un solo lugar.",
+  lead:"Explora el catálogo completo de cursos online disponibles con Factorial: liderazgo, cumplimiento normativo, tecnología, seguridad laboral, bienestar y mucho más.",
+  sCourses:"Cursos",sCats:"Categorías",sHours:"Horas de contenido",sMulti:"Cursos multilingües",browse:"Explorar por categoría",
+  all:"Todas",allCats:"Todas las categorías",allSubs:"Todas las subcategorías",allLangs:"Todos los idiomas",allLvls:"Todos los niveles",
+  search:"Buscar cursos, temas o proveedores…",showing:(n,t)=>`Mostrando <b>${n}</b> de ${t} cursos`,reset:"Limpiar filtros",cards:"Tarjetas",table:"Tabla",
+  sortRel:"Relevancia",sortRate:"Mejor valorados",sortNew:"Más recientes",sortShort:"Más cortos",sortLong:"Más largos",sortAz:"A–Z",
+  newLabel:"Novedades",newText:"Recién añadidos al catálogo:",new:"Nuevo",duration:"Duración",rating:"Valoración",languages:"Idiomas",
+  noRating:"Sin valoraciones",reviews:n=>`${n} valoraciones`,provider:"Proveedor",level:"Nivel",category:"Categoría",course:"Curso",
+  features:"Qué incluye",mobile:"Apto para móvil",yes:"Sí",empty:"No hay cursos que coincidan con tus filtros.",
+  lfNote:"Puedes combinar varios tipos de traducción e idiomas.",ltx:"Texto del curso",lsu:"Subtítulos",lau:"Audio",lfFilter:"Filtrar idiomas…",lfClear:"Borrar",lfNone:"Ningún idioma coincide.",langsN:n=>`${n} idiomas`,
+  more:"Ver más cursos",loading:"Cargando catálogo…",loadErr:"No se ha podido cargar el catálogo. Recarga la página para intentarlo de nuevo.",
+  origNote:"Título y descripción en el idioma original del curso.",
+  footer:"Catálogo de formación de Factorial · Los contenidos y la disponibilidad de idiomas pueden variar.",close:"Cerrar"},
+ it:{pill:"Formazione · Catalogo corsi",h1a:"Tutti i corsi,",h1b:"in un unico posto.",
+  lead:"Esplora il catalogo completo dei corsi online disponibili con Factorial: leadership, compliance, tecnologia, sicurezza sul lavoro, benessere e molto altro.",
+  sCourses:"Corsi",sCats:"Categorie",sHours:"Ore di contenuti",sMulti:"Corsi multilingue",browse:"Esplora per categoria",
+  all:"Tutte",allCats:"Tutte le categorie",allSubs:"Tutte le sottocategorie",allLangs:"Tutte le lingue",allLvls:"Tutti i livelli",
+  search:"Cerca corsi, argomenti o fornitori…",showing:(n,t)=>`Visualizzazione di <b>${n}</b> su ${t} corsi`,reset:"Azzera filtri",cards:"Schede",table:"Tabella",
+  sortRel:"Rilevanza",sortRate:"Più apprezzati",sortNew:"Più recenti",sortShort:"Più brevi",sortLong:"Più lunghi",sortAz:"A–Z",
+  newLabel:"Novità",newText:"Appena aggiunti al catalogo:",new:"Nuovo",duration:"Durata",rating:"Valutazione",languages:"Lingue",
+  noRating:"Nessuna valutazione",reviews:n=>`${n} valutazioni`,provider:"Fornitore",level:"Livello",category:"Categoria",course:"Corso",
+  features:"Cosa include",mobile:"Adatto a mobile",yes:"Sì",empty:"Nessun corso corrisponde ai filtri selezionati.",
+  lfNote:"Puoi combinare più tipi di traduzione e lingue.",ltx:"Testo del corso",lsu:"Sottotitoli",lau:"Audio",lfFilter:"Filtra lingue…",lfClear:"Cancella",lfNone:"Nessuna lingua trovata.",langsN:n=>`${n} lingue`,
+  more:"Mostra altri corsi",loading:"Caricamento del catalogo…",loadErr:"Impossibile caricare il catalogo. Ricarica la pagina per riprovare.",
+  origNote:"Titolo e descrizione nella lingua originale del corso.",
+  footer:"Catalogo formazione di Factorial · Contenuti e disponibilità linguistica possono variare.",close:"Chiudi"},
+ en:{pill:"Training · Course Catalogue",h1a:"Every course,",h1b:"in one place.",
+  lead:"Explore the full catalogue of online courses available with Factorial: leadership, compliance, technology, workplace safety, wellness and much more.",
+  sCourses:"Courses",sCats:"Categories",sHours:"Hours of content",sMulti:"Multilingual courses",browse:"Browse by category",
+  all:"All",allCats:"All categories",allSubs:"All subcategories",allLangs:"All languages",allLvls:"All levels",
+  search:"Search courses, topics or providers…",showing:(n,t)=>`Showing <b>${n}</b> of ${t} courses`,reset:"Clear filters",cards:"Cards",table:"Table",
+  sortRel:"Relevance",sortRate:"Top rated",sortNew:"Newest",sortShort:"Shortest",sortLong:"Longest",sortAz:"A–Z",
+  newLabel:"Just added",newText:"New in the catalogue:",new:"New",duration:"Duration",rating:"Rating",languages:"Languages",
+  noRating:"No ratings yet",reviews:n=>`${n} ratings`,provider:"Provider",level:"Level",category:"Category",course:"Course",
+  features:"What's included",mobile:"Mobile ready",yes:"Yes",empty:"No courses match your filters.",
+  lfNote:"Can combine several translation types and languages.",ltx:"Course text",lsu:"Subtitles",lau:"Audio",lfFilter:"Filter languages…",lfClear:"Clear",lfNone:"No languages match.",langsN:n=>`${n} languages`,
+  more:"Show more courses",loading:"Loading catalogue…",loadErr:"The catalogue couldn't load. Reload the page to try again.",
+  origNote:"Title and description in the course's original language.",
+  footer:"Factorial training catalogue · Content and language availability may vary.",close:"Close"}
+};
+
+const LI = {es:0,it:1,en:2};
+const LVL = {Universal:["Todos los niveles","Tutti i livelli","All levels"],Foundation:["Básico","Base","Foundation"],Application:["Intermedio","Intermedio","Intermediate"],Advanced:["Avanzado","Avanzato","Advanced"]};
+const FEAT = {"Video":["Vídeo","Video"],"Post-Assessment":["Evaluación final","Valutazione finale"],"Knowledge Checks":["Comprobaciones de conocimiento","Verifiche di apprendimento"],
+ "Supplemental Resources":["Recursos complementarios","Risorse aggiuntive"],"Transcript":["Transcripción","Trascrizione"],"Interactive Elements":["Elementos interactivos","Elementi interattivi"],
+ "Audio Narration":["Narración en audio","Narrazione audio"],"Locked Navigation":["Navegación guiada","Navigazione guidata"],"Adaptive Learning":["Aprendizaje adaptativo","Apprendimento adattivo"],
+ "Inline Activities":["Actividades integradas","Attività integrate"],"Facilitator Guide":["Guía para formadores","Guida per formatori"],"AI Coaching":["Coaching con IA","Coaching con IA"],"Test Out":["Prueba de nivel para omitir","Test per saltare il corso"]};
+
+const store = {get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const params = new URLSearchParams(location.search);
+let lang = params.get("lang") || store.get("cc-lang") || "en";
+if(!T[lang]) lang = "en";
+const state = {cat:-1,sub:-1,langs:new Set(),ltypes:new Set(),lvl:-1,q:"",sort:"rel",view:store.get("cc-view")||"cards",shown:PAGE};
+let COURSES = [];
+let BYID = new Map();
+let ready = false;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const t = k => T[lang][k];
+const fmt = n => n.toLocaleString(lang==="en"?"en-GB":lang);
+const catName = i => { const k = META.cats[i]; return (META.catT[k]||{})[lang] || k; };
+const subName = i => { const k = META.subs[i]; return lang==="en" ? k : ((META.subT[k]||[k,k])[LI[lang]] || k); };
+const lvlName = i => { const k = META.lvls[i]; return (LVL[k]||[k,k,k])[LI[lang]]; };
+const featName = f => lang==="en" ? f : (FEAT[f]||[f,f])[LI[lang]];
+const dur = m => !m ? "—" : m<60 ? `${m} min` : (m%60 ? `${Math.floor(m/60)} h ${m%60} min` : `${m/60} h`);
+const initials = s => { const w = s.replace(/[^\p{L}\p{N} ]/gu," ").split(/\s+/).filter(x=>x.length>2); return (w.length>1 ? w[0][0]+w[1][0] : (w[0]||"··").slice(0,2)).toUpperCase(); };
+const color = c => CAT_COLORS[META.cats[c.tops[0]]] || ["#ececf3","#55556b"];
+const levelsOf = c => c.lv.length ? c.lv.map(lvlName).join(" · ") : "—";
+const stars = c => c.rc ? `<span class="stars">★</span> ${c.r.toFixed(1)} <span style="color:var(--muted);font-weight:500">(${fmt(c.rc)})</span>` : `<span style="color:var(--muted);font-weight:500">—</span>`;
+const ORDER = ["en","es","it","fr","de","pt"];
+const ALIAS = {"zh-cmn":"cmn","zh-yue":"yue"};
+const dnCache = {}, lnCache = {};
+function langName(code){
+  const key = lang+"|"+code; if(lnCache[key]) return lnCache[key];
+  let out = code;
+  try{ dnCache[lang] = dnCache[lang] || new Intl.DisplayNames([lang],{type:"language"});
+    let n = dnCache[lang].of(ALIAS[code]||code);
+    if(n.toLowerCase()===code.toLowerCase()){ dnCache.en = dnCache.en || new Intl.DisplayNames(["en"],{type:"language"}); n = dnCache.en.of(ALIAS[code]||code); }
+    out = n.charAt(0).toUpperCase()+n.slice(1); }catch(e){}
+  return lnCache[key] = out;
+}
+const LC = META.langs; // code list
+const BASE = LC.map(c=>c.split("-")[0]);
+const LTREE = {};
+LC.forEach((code,i)=>{ const b=BASE[i]; LTREE[b]=LTREE[b]||new Set(); if(code.includes("-")) LTREE[b].add(code); });
+const LIDX = Object.fromEntries(LC.map((c,i)=>[c,i]));
+const lfOpen = new Set();
+let lfQuery = "";
+const ltFields = () => state.ltypes.size ? [...state.ltypes] : ["tx","su","au"];
+
+function hydrate(rows){
+  // [id,title,pub,tops,subs,dur,tx,su,au,lvls,rating10,rc,feats,desc,days,mobile]
+  for(const r of rows){
+    const c = {id:r[0],t:r[1],p:r[2],tops:r[3],subs:r[4],d:r[5],tx:r[6],su:r[7],au:r[8],lv:r[9],r:r[10]/10,rc:r[11],f:r[12],desc:r[13],days:r[14],mob:!!r[15]};
+    const all = new Set([...c.tx,...c.su,...c.au]);
+    c.all = all;
+    c.langs = [...new Set([...all].map(i=>BASE[i]))];
+    c.hay = (c.t+" \u0001 "+(META.pubs[c.p]||"")+" \u0001 "+c.desc).toLowerCase();
+    c.tl = c.t.toLowerCase();
+    COURSES.push(c); BYID.set(c.id,c);
+  }
+}
+
+function matchLang(c){
+  if(!state.langs.size) return true;
+  const f = ltFields();
+  for(const code of state.langs){ const i = LIDX[code]; if(i===undefined) continue; for(const k of f) if(c[k].includes(i)) return true; }
+  return false;
+}
+let qWords = [];
+function matches(c, skip){
+  if(skip!=="cat" && state.cat>=0 && !c.tops.includes(state.cat)) return false;
+  if(state.sub>=0 && !c.subs.includes(state.sub)) return false;
+  if(state.lvl>=0 && !c.lv.includes(state.lvl)) return false;
+  if(skip!=="lang" && !matchLang(c)) return false;
+  for(const w of qWords) if(!c.hay.includes(w)) return false;
+  return true;
+}
+
+function flags(c,max){
+  const ls = ORDER.filter(x=>c.langs.includes(x));
+  let shown = ls.slice(0,max).map(x=>`<span class="flag ${x===lang?"hl":""}" title="${esc(langName(x))}">${x.toUpperCase()}</span>`).join("");
+  const more = c.langs.length - Math.min(max,ls.length);
+  if(more>0) shown += `<span class="flag">+${more}</span>`;
+  return shown || `<span class="flag">—</span>`;
+}
+
+function renderStatic(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i]").forEach(el=>{el.textContent = t(el.dataset.i)});
+  document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed", b.dataset.lang===lang));
+  document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed", b.dataset.view===state.view));
+  $("#q").placeholder = t("search");
+  const cats = META.cats.map((k,i)=>i).sort((a,b)=>META.catN[b]-META.catN[a]);
+  $("#f-cat").innerHTML = `<option value="-1">${t("allCats")}</option>` + cats.map(i=>`<option value="${i}">${esc(catName(i))}</option>`).join("");
+  $("#f-cat").value = state.cat;
+  $("#lf-q").placeholder = t("lfFilter");
+  document.querySelectorAll("[data-ltype]").forEach(cb=>cb.checked = state.ltypes.has(cb.dataset.ltype));
+  const lvOrder = ["Foundation","Application","Advanced","Universal"];
+  const lvIdx = META.lvls.map((k,i)=>i).sort((a,b)=>(lvOrder.indexOf(META.lvls[a])+99*(lvOrder.indexOf(META.lvls[a])<0))-(lvOrder.indexOf(META.lvls[b])+99*(lvOrder.indexOf(META.lvls[b])<0)));
+  $("#f-lvl").innerHTML = `<option value="-1">${t("allLvls")}</option>` + lvIdx.map(i=>`<option value="${i}">${esc(lvlName(i))}</option>`).join("");
+  $("#f-lvl").value = state.lvl;
+  $("#sort").innerHTML = [["rel","sortRel"],["rate","sortRate"],["new","sortNew"],["short","sortShort"],["long","sortLong"],["az","sortAz"]].map(([v,k])=>`<option value="${v}">${t(k)}</option>`).join("");
+  $("#sort").value = state.sort;
+  $("#s-courses").textContent = fmt(META.total);
+  $("#s-cats").textContent = fmt(META.cats.length);
+  $("#s-hours").textContent = fmt(META.hours);
+  $("#s-multi").textContent = fmt(META.multi);
+  const news = META.newest.map(id=>BYID.get(id)).filter(Boolean);
+  $("#newbar").hidden = !news.length;
+  $("#newbar").innerHTML = `<strong>${t("newLabel")}</strong><span>${t("newText")}</span>` + news.map(c=>`<button data-open="${c.id}" title="${esc(c.t)}">${esc(c.t.length>38?c.t.slice(0,36)+"…":c.t)}</button>`).join("");
+}
+
+function renderSubs(){
+  const set = new Set();
+  for(const c of COURSES){ if(state.cat<0 || c.tops.includes(state.cat)) for(const s of c.subs) set.add(s); }
+  const subs = [...set].sort((a,b)=>subName(a).localeCompare(subName(b),lang));
+  if(state.sub>=0 && !set.has(state.sub)) state.sub = -1;
+  $("#f-sub").innerHTML = `<option value="-1">${t("allSubs")}</option>` + subs.map(s=>`<option value="${s}">${esc(subName(s))}</option>`).join("");
+  $("#f-sub").value = state.sub;
+}
+
+function renderChips(){
+  const n = new Array(META.cats.length).fill(0); let tot = 0;
+  for(const c of COURSES){ if(!matches(c,"cat")) continue; tot++; for(const k of c.tops) n[k]++; }
+  const cats = META.cats.map((k,i)=>i).sort((a,b)=>META.catN[b]-META.catN[a]);
+  $("#chips").innerHTML = `<button class="chip" data-cat="-1" aria-pressed="${state.cat<0}">${t("all")} <span class="n">${fmt(tot)}</span></button>` +
+    cats.map(i=>{ const col = CAT_COLORS[META.cats[i]]||["#ececf3","#55556b"];
+      return `<button class="chip" data-cat="${i}" aria-pressed="${state.cat===i}"><span class="dot" style="background:${col[1]}"></span>${esc(catName(i))} <span class="n">${fmt(n[i])}</span></button>`}).join("");
+}
+
+function renderLangs(){
+  const sel = [...state.langs];
+  $("#lf-label").textContent = !sel.length ? t("allLangs") : sel.length===1 ? langName(sel[0]) : t("langsN")(sel.length);
+  $("#lf-btn").classList.toggle("on", sel.length>0);
+  if($("#lf-panel").hidden) return;
+  const f = ltFields();
+  const cnt = new Map(); // code or base -> count
+  for(const c of COURSES){
+    if(!matches(c,"lang")) continue;
+    const seen = new Set();
+    for(const k of f) for(const i of c[k]){ seen.add(LC[i]); seen.add(BASE[i]); }
+    for(const x of seen) cnt.set(x,(cnt.get(x)||0)+1);
+  }
+  const q = lfQuery.toLowerCase();
+  const rows = Object.keys(LTREE).map(b=>({b,name:langName(b),n:cnt.get(b)||0,kids:[...LTREE[b]].map(k=>({b:k,name:langName(k),n:cnt.get(k)||0})).filter(k=>k.n>0||state.langs.has(k.b))}))
+    .filter(r=>r.n>0||state.langs.has(r.b))
+    .filter(r=>!q||r.name.toLowerCase().includes(q)||r.kids.some(k=>k.name.toLowerCase().includes(q)))
+    .sort((a,b)=>a.name.localeCompare(b.name,lang));
+  const row = (r,kid) => `<div class="lf-row${kid?" kid":""}"><label><input type="checkbox" data-lcode="${esc(r.b)}" ${state.langs.has(r.b)?"checked":""}><span>${esc(r.name)}</span></label><span class="n">${fmt(r.n)}</span>${!kid&&r.kids.length?`<button type="button" class="lf-exp" data-exp="${esc(r.b)}" aria-expanded="${lfOpen.has(r.b)||!!q}" aria-label="${esc(r.name)}">▼</button>`:""}</div>`;
+  $("#lf-list").innerHTML = rows.length ? rows.map(r=>row(r)+((lfOpen.has(r.b)||q)?r.kids.map(k=>row(k,true)).join(""):"")).join("") : `<div class="lf-none">${t("lfNone")}</div>`;
+}
+
+function sortList(l){
+  const s = state.sort;
+  if(s==="rel"){
+    if(qWords.length){ const phrase = qWords.join(" "); const sc = c => (c.tl.includes(phrase)?2:0) + (qWords.every(w=>c.tl.includes(w))?1:0); l.sort((a,b)=>sc(b)-sc(a) || b.rc-a.rc); }
+    else l.sort((a,b)=>b.rc-a.rc || b.r-a.r);
+  }
+  if(s==="rate") l.sort((a,b)=>((b.rc>=3?b.r:0)-(a.rc>=3?a.r:0)) || b.rc-a.rc);
+  if(s==="new") l.sort((a,b)=>b.days-a.days);
+  if(s==="short") l.sort((a,b)=>(a.d||1e9)-(b.d||1e9));
+  if(s==="long") l.sort((a,b)=>b.d-a.d);
+  if(s==="az") l.sort((a,b)=>a.t.localeCompare(b.t,lang));
+  return l;
+}
+
+function badgeNew(c){ return c.days>=META.newCut ? `<span class="b new">${t("new")}</span>` : ""; }
+function cardHTML(c){
+  const col=color(c), top=c.tops[0];
+  return `<button class="card" data-open="${c.id}">
+    <div class="card-h"><div class="av" style="background:${col[0]};color:${col[1]}">${top!==undefined?esc(initials(catName(top))):"··"}</div>
+    <div style="min-width:0"><h3>${esc(c.t)}</h3><div class="badges">${badgeNew(c)}${top!==undefined?`<span class="b cat">${esc(catName(top))}</span>`:""}${c.lv.length?`<span class="b lvl">${esc(lvlName(c.lv[0]))}${c.lv.length>1?" +":""}</span>`:""}${c.subs.length?`<span class="b">${esc(subName(c.subs[0]))}</span>`:""}</div></div></div>
+    <p class="desc">${esc(c.desc)}</p>
+    ${c.p>=0?`<div class="prov">${t("provider")}: ${esc(META.pubs[c.p])}</div>`:""}
+    <div class="foot"><div><small>${t("duration")}</small><span>${dur(c.d)}</span></div><div><small>${t("rating")}</small><span>${stars(c)}</span></div><div><small>${t("languages")}</small><div class="flags">${flags(c,3)}</div></div></div>
+  </button>`;
+}
+function rowHTML(c){
+  return `<tr data-open="${c.id}"><td class="t">${esc(c.t)} ${badgeNew(c)}</td><td>${c.tops.length?esc(catName(c.tops[0])):"—"}</td><td>${levelsOf(c)}</td><td style="white-space:nowrap">${dur(c.d)}</td><td style="white-space:nowrap">${stars(c)}</td><td><div class="flags">${flags(c,3)}</div></td><td>${c.p>=0?esc(META.pubs[c.p]):"—"}</td></tr>`;
+}
+
+let LIST = [];
+function render(resetPage=true){
+  if(!ready) return;
+  if(resetPage) state.shown = PAGE;
+  qWords = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+  renderChips();
+  renderLangs();
+  LIST = sortList(COURSES.filter(c=>matches(c)));
+  $("#count").innerHTML = t("showing")(fmt(LIST.length), fmt(COURSES.length));
+  $("#reset").hidden = !(state.cat>=0||state.sub>=0||state.langs.size||state.lvl>=0||state.q);
+  const R = $("#results");
+  if(!LIST.length){ R.innerHTML = `<div class="empty">${t("empty")}</div>`; return; }
+  const page = LIST.slice(0,state.shown);
+  const more = LIST.length>state.shown ? `<div class="more-wrap"><button class="more" id="more">${t("more")} <span>${fmt(Math.min(PAGE,LIST.length-state.shown))} / ${fmt(LIST.length-state.shown)}</span></button></div>` : "";
+  if(state.view==="table"){
+    R.innerHTML = `<div class="tablewrap"><table><thead><tr><th>${t("course")}</th><th>${t("category")}</th><th>${t("level")}</th><th>${t("duration")}</th><th>${t("rating")}</th><th>${t("languages")}</th><th>${t("provider")}</th></tr></thead><tbody>${page.map(rowHTML).join("")}</tbody></table></div>${more}`;
+  } else {
+    R.innerHTML = `<div class="grid">${page.map(cardHTML).join("")}</div>${more}`;
+  }
+}
+
+function openModal(id){
+  const c = BYID.get(+id); if(!c) return; const col = color(c);
+  const m = $("#modal");
+  const grp = arr => [...new Set(arr.map(i=>BASE[i]))].map(x=>`<span class="b ${x===lang?"cat":""}">${esc(langName(x))}</span>`).join("");
+  m.innerHTML = `<div class="m-h"><div class="av" style="background:${col[0]};color:${col[1]}">${c.tops.length?esc(initials(catName(c.tops[0]))):"··"}</div>
+    <div style="min-width:0"><h3>${esc(c.t)}</h3><div class="badges">${badgeNew(c)}${c.tops.map(k=>`<span class="b cat">${esc(catName(k))}</span>`).join("")}${c.subs.map(s=>`<span class="b">${esc(subName(s))}</span>`).join("")}</div></div>
+    <button class="m-close" aria-label="${t("close")}" data-close>×</button></div>
+    <div class="m-b"><p>${esc(c.desc)}</p>
+    <div class="m-grid"><div><small>${t("duration")}</small><span>${dur(c.d)}</span></div><div><small>${t("level")}</small><span>${levelsOf(c)}</span></div>
+    <div><small>${t("rating")}</small><span>${c.rc?`<span class="stars">★</span> ${c.r.toFixed(1)} · ${t("reviews")(fmt(c.rc))}`:t("noRating")}</span></div>
+    ${c.p>=0?`<div><small>${t("provider")}</small><span>${esc(META.pubs[c.p])}</span></div>`:""}${c.mob?`<div><small>${t("mobile")}</small><span>${t("yes")}</span></div>`:""}</div>
+    ${[["ltx","tx"],["lsu","su"],["lau","au"]].filter(([,k])=>c[k].length).map(([lbl,k])=>`<h4>${t(lbl)}</h4><div class="m-langs">${grp(c[k])}</div>`).join("")}
+    ${c.f.length?`<h4>${t("features")}</h4><div class="badges">${c.f.map(i=>`<span class="b lvl">${esc(featName(META.feats[i]))}</span>`).join("")}</div>`:""}
+    ${lang!=="en"?`<p class="m-note">${t("origNote")}</p>`:""}</div>`;
+  m.showModal();
+}
+
+document.addEventListener("click",e=>{
+  if(e.target.closest("#more")){ state.shown += PAGE; render(false); return; }
+  const o = e.target.closest("[data-open]"); if(o){ openModal(o.dataset.open); return; }
+  if(e.target.closest("[data-close]") || e.target.id==="modal"){ $("#modal").close(); return; }
+  const ch = e.target.closest("[data-cat]"); if(ch){ state.cat = +ch.dataset.cat; $("#f-cat").value = state.cat; renderSubs(); render(); return; }
+  const lb = e.target.closest("[data-lang]"); if(lb){ lang = lb.dataset.lang; store.set("cc-lang",lang); const u=new URL(location.href); u.searchParams.set("lang",lang); try{history.replaceState(null,"",u)}catch(_){} renderStatic(); renderSubs(); render(false); return; }
+  const vb = e.target.closest("[data-view]"); if(vb){ state.view = vb.dataset.view; store.set("cc-view",state.view); renderStatic(); render(false); return; }
+});
+$("#f-cat").onchange = e=>{state.cat=+e.target.value; renderSubs(); render()};
+$("#f-sub").onchange = e=>{state.sub=+e.target.value; render()};
+$("#lf-btn").onclick = ()=>{ const p=$("#lf-panel"); p.hidden=!p.hidden; $("#lf-btn").setAttribute("aria-expanded",!p.hidden); renderLangs(); if(!p.hidden) $("#lf-q").focus(); };
+$("#lf-panel").addEventListener("change",e=>{
+  const l=e.target.dataset.lcode, ty=e.target.dataset.ltype;
+  if(l){ e.target.checked ? state.langs.add(l) : state.langs.delete(l); }
+  if(ty){ e.target.checked ? state.ltypes.add(ty) : state.ltypes.delete(ty); }
+  render();
+});
+$("#lf-panel").addEventListener("click",e=>{ const x=e.target.closest("[data-exp]"); if(x){ const b=x.dataset.exp; lfOpen.has(b)?lfOpen.delete(b):lfOpen.add(b); renderLangs(); }});
+$("#lf-q").oninput = e=>{ lfQuery=e.target.value.trim(); renderLangs(); };
+$("#lf-clear").onclick = ()=>{ state.langs.clear(); state.ltypes.clear(); lfQuery=""; $("#lf-q").value=""; renderStatic(); render(); };
+document.addEventListener("click",e=>{ if(!e.target.closest("#lf") && !$("#lf-panel").hidden){ $("#lf-panel").hidden=true; $("#lf-btn").setAttribute("aria-expanded","false"); }});
+document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !$("#lf-panel").hidden){ $("#lf-panel").hidden=true; $("#lf-btn").setAttribute("aria-expanded","false"); $("#lf-btn").focus(); }});
+$("#f-lvl").onchange = e=>{state.lvl=+e.target.value; render()};
+$("#sort").onchange = e=>{state.sort=e.target.value; render()};
+let qTimer;
+$("#q").oninput = e=>{ clearTimeout(qTimer); qTimer = setTimeout(()=>{ state.q=e.target.value.trim(); render(); }, 180); };
+$("#reset").onclick = ()=>{Object.assign(state,{cat:-1,sub:-1,lvl:-1,q:""}); state.langs.clear(); state.ltypes.clear(); lfQuery=""; $("#lf-q").value=""; $("#q").value=""; renderStatic(); renderSubs(); render()};
+$("#theme").onclick = ()=>{const r=document.documentElement; const dark = r.dataset.theme ? r.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches; r.dataset.theme = dark?"light":"dark"; store.set("cc-theme",r.dataset.theme)};
+const th = store.get("cc-theme"); if(th) document.documentElement.dataset.theme = th;
+
+renderStatic();
+$("#results").innerHTML = `<div class="empty loading"><span class="spin" aria-hidden="true"></span>${t("loading")}</div>`;
+Promise.all(CHUNKS.map(f=>fetch(f).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })))
+  .then(parts=>{ parts.forEach(hydrate); ready = true; renderStatic(); renderSubs(); render(); })
+  .catch(()=>{ $("#results").innerHTML = `<div class="empty">${t("loadErr")}</div>`; });
+
+</script>
+</body>
+</html>
