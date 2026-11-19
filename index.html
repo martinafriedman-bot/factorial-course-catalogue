@@ -107,7 +107,7 @@ h1 em{font-style:normal;color:#fff}
 .b.cat{background:var(--accent-soft);color:var(--accent-ink)}
 .b.lvl{background:var(--teal-soft);color:var(--teal)}
 .desc{margin:0;color:var(--muted);font-size:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.foot{margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.foot{margin-top:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px;border-top:1px solid var(--line);padding-top:12px}
 .foot small{display:block;font-size:10.5px;color:var(--muted);font-weight:500}
 .foot>div>span{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .stars{color:var(--star)}
@@ -360,6 +360,9 @@ const dur = m => !m ? "—" : m<60 ? `${m} min` : (m%60 ? `${Math.floor(m/60)} h
 const initials = s => { const w = s.replace(/[^\p{L}\p{N} ]/gu," ").split(/\s+/).filter(x=>x.length>2); return (w.length>1 ? w[0][0]+w[1][0] : (w[0]||"··").slice(0,2)).toUpperCase(); };
 const color = c => CAT_COLORS[META.cats[c.tops[0]]] || ["#e3e3ef","#25253d"];
 const levelsOf = c => c.lv.length ? c.lv.map(lvlName).join(" · ") : "—";
+// Course ratings are hidden for now. The data and the code are kept:
+// set SHOW_RATINGS to true to bring back the rating column, pop-up field and "Top rated" sort.
+const SHOW_RATINGS = false;
 const stars = c => c.rc ? `<span class="stars">★</span> ${c.r.toFixed(1)} <span style="color:var(--muted);font-weight:500">(${fmt(c.rc)})</span>` : `<span style="color:var(--muted);font-weight:500">—</span>`;
 const ORDER = ["en","es","it","fr","de","pt"];
 const ALIAS = {"zh-cmn":"cmn","zh-yue":"yue"};
@@ -456,7 +459,7 @@ function renderStatic(){
   const lvIdx = META.lvls.map((k,i)=>i).sort((a,b)=>(lvOrder.indexOf(META.lvls[a])+99*(lvOrder.indexOf(META.lvls[a])<0))-(lvOrder.indexOf(META.lvls[b])+99*(lvOrder.indexOf(META.lvls[b])<0)));
   $("#f-lvl").innerHTML = `<option value="-1">${t("allLvls")}</option>` + lvIdx.map(i=>`<option value="${i}">${esc(lvlName(i))}</option>`).join("");
   $("#f-lvl").value = state.lvl;
-  $("#sort").innerHTML = [["rel","sortRel"],["rate","sortRate"],["new","sortNew"],["short","sortShort"],["long","sortLong"],["az","sortAz"]].map(([v,k])=>`<option value="${v}">${t(k)}</option>`).join("");
+  $("#sort").innerHTML = [["rel","sortRel"],["rate","sortRate"],["new","sortNew"],["short","sortShort"],["long","sortLong"],["az","sortAz"]].filter(([v])=>SHOW_RATINGS||v!=="rate").map(([v,k])=>`<option value="${v}">${t(k)}</option>`).join("");
   $("#sort").value = state.sort;
   $("#s-courses").textContent = fmt(META.total);
   $("#s-cats").textContent = fmt(META.cats.length);
@@ -529,11 +532,11 @@ function cardHTML(c){
     <div style="min-width:0"><h3>${esc(c.t)}</h3><div class="badges">${badgeNew(c)}${top!==undefined?`<span class="b cat">${esc(catName(top))}</span>`:""}${c.lv.length?`<span class="b lvl">${esc(lvlName(c.lv[0]))}${c.lv.length>1?" +":""}</span>`:""}${c.subs.length?`<span class="b">${esc(subName(c.subs[0]))}</span>`:""}</div></div></div>
     <p class="desc">${esc(c.desc)}</p>
     ${c.p>=0?`<div class="prov">${t("provider")}: ${esc(META.pubs[c.p])}</div>`:""}
-    <div class="foot"><div><small>${t("duration")}</small><span>${dur(c.d)}</span></div><div><small>${t("rating")}</small><span>${stars(c)}</span></div><div><small>${t("languages")}</small><div class="flags">${flags(c,3)}</div></div></div>
+    <div class="foot"><div><small>${t("duration")}</small><span>${dur(c.d)}</span></div>${SHOW_RATINGS?`<div><small>${t("rating")}</small><span>${stars(c)}</span></div>`:""}<div><small>${t("languages")}</small><div class="flags">${flags(c,3)}</div></div></div>
   </button>`;
 }
 function rowHTML(c){
-  return `<tr data-open="${c.id}"><td class="t">${esc(c.t)} ${badgeNew(c)}</td><td>${c.tops.length?esc(catName(c.tops[0])):"—"}</td><td>${levelsOf(c)}</td><td style="white-space:nowrap">${dur(c.d)}</td><td style="white-space:nowrap">${stars(c)}</td><td><div class="flags">${flags(c,3)}</div></td><td>${c.p>=0?esc(META.pubs[c.p]):"—"}</td></tr>`;
+  return `<tr data-open="${c.id}"><td class="t">${esc(c.t)} ${badgeNew(c)}</td><td>${c.tops.length?esc(catName(c.tops[0])):"—"}</td><td>${levelsOf(c)}</td><td style="white-space:nowrap">${dur(c.d)}</td>${SHOW_RATINGS?`<td style="white-space:nowrap">${stars(c)}</td>`:""}<td><div class="flags">${flags(c,3)}</div></td><td>${c.p>=0?esc(META.pubs[c.p]):"—"}</td></tr>`;
 }
 
 let LIST = [];
@@ -551,7 +554,7 @@ function render(resetPage=true){
   const page = LIST.slice(0,state.shown);
   const more = LIST.length>state.shown ? `<div class="more-wrap"><button class="more" id="more">${t("more")} <span>${fmt(Math.min(PAGE,LIST.length-state.shown))} / ${fmt(LIST.length-state.shown)}</span></button></div>` : "";
   if(state.view==="table"){
-    R.innerHTML = `<div class="tablewrap"><table><thead><tr><th>${t("course")}</th><th>${t("category")}</th><th>${t("level")}</th><th>${t("duration")}</th><th>${t("rating")}</th><th>${t("languages")}</th><th>${t("provider")}</th></tr></thead><tbody>${page.map(rowHTML).join("")}</tbody></table></div>${more}`;
+    R.innerHTML = `<div class="tablewrap"><table><thead><tr><th>${t("course")}</th><th>${t("category")}</th><th>${t("level")}</th><th>${t("duration")}</th>${SHOW_RATINGS?`<th>${t("rating")}</th>`:""}<th>${t("languages")}</th><th>${t("provider")}</th></tr></thead><tbody>${page.map(rowHTML).join("")}</tbody></table></div>${more}`;
   } else {
     R.innerHTML = `<div class="grid">${page.map(cardHTML).join("")}</div>${more}`;
   }
@@ -566,7 +569,7 @@ function openModal(id){
     <button class="m-close" aria-label="${t("close")}" data-close>×</button></div>
     <div class="m-b"><p>${esc(c.desc)}</p>
     <div class="m-grid"><div><small>${t("duration")}</small><span>${dur(c.d)}</span></div><div><small>${t("level")}</small><span>${levelsOf(c)}</span></div>
-    <div><small>${t("rating")}</small><span>${c.rc?`<span class="stars">★</span> ${c.r.toFixed(1)} · ${t("reviews")(fmt(c.rc))}`:t("noRating")}</span></div>
+    ${SHOW_RATINGS?`<div><small>${t("rating")}</small><span>${c.rc?`<span class="stars">★</span> ${c.r.toFixed(1)} · ${t("reviews")(fmt(c.rc))}`:t("noRating")}</span></div>`:""}
     ${c.p>=0?`<div><small>${t("provider")}</small><span>${esc(META.pubs[c.p])}</span></div>`:""}${c.mob?`<div><small>${t("mobile")}</small><span>${t("yes")}</span></div>`:""}</div>
     ${[["ltx","tx"],["lsu","su"],["lau","au"]].filter(([,k])=>c[k].length).map(([lbl,k])=>`<h4>${t(lbl)}</h4><div class="m-langs">${grp(c[k])}</div>`).join("")}
     ${c.f.length?`<h4>${t("features")}</h4><div class="badges">${c.f.map(i=>`<span class="b lvl">${esc(featName(META.feats[i]))}</span>`).join("")}</div>`:""}
